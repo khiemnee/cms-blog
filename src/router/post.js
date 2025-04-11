@@ -3,7 +3,7 @@ import checkAuth from "../middleware/auth.js";
 import checkRole from "../middleware/role.js";
 import Post from "../model/post.js";
 import {checkCache,checkCachePost} from "../middleware/post/checkPostCache.js";
-import client from "../../config/redis.js";
+import client from "../redis/redis.js";
 
 const postRouter = new express.Router();
 

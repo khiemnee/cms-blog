@@ -3,7 +3,7 @@ import checkAuth from '../middleware/auth.js'
 import checkRole from '../middleware/role.js'
 import Category from '../model/category.js'
 import { checkCacheCategories } from '../middleware/category/checkCateCache.js'
-import client from '../../config/redis.js'
+import client from '../redis/redis.js'
 
 const categoryRouter = new express.Router()
 

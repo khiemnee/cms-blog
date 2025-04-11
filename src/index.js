@@ -4,7 +4,7 @@ import userRouter from './router/user.js'
 import postRouter from './router/post.js'
 import categoryRouter from './router/category.js'
 import commentRouter from './router/comment.js'
-import('../config/redis.js')
+import('./redis/redis.js')
 
 const port = process.env.port
 const app = new express()

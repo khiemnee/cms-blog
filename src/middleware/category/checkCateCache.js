@@ -1,4 +1,4 @@
-import client from "../../../config/redis.js";
+import client from "../../redis/redis.js";
 
 export const checkCacheCategories = async (req,res,next) =>{
     try {
