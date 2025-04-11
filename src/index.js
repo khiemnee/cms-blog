@@ -14,10 +14,7 @@ app.use(userRouter)
 app.use(postRouter)
 app.use(categoryRouter)
 app.use(commentRouter)
-app.use(cors({
-    origin: 'http://localhost:5173', 
-    credentials: true
-  }));
+app.use(cors());
 
 app.listen(port,()=>{
     console.log('server is up')
