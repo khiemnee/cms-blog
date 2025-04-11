@@ -4,6 +4,7 @@ import userRouter from './router/user.js'
 import postRouter from './router/post.js'
 import categoryRouter from './router/category.js'
 import commentRouter from './router/comment.js'
+import cors from 'cors';
 import('./redis/redis.js')
 
 const port = process.env.port
@@ -13,6 +14,10 @@ app.use(userRouter)
 app.use(postRouter)
 app.use(categoryRouter)
 app.use(commentRouter)
+app.use(cors({
+    origin: 'http://localhost:5173', 
+    credentials: true
+  }));
 
 app.listen(port,()=>{
     console.log('server is up')
