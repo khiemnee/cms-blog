@@ -18,7 +18,6 @@ const postSchema = mongoose.Schema(
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required : true
     },
     comments : [
       {
