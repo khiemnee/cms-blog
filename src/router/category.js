@@ -37,7 +37,7 @@ categoryRouter.get('/categories',checkAuth,checkCacheCategories,async (req,res)=
    
         res.status(201).send(categories)
     } catch (error) {
-        res.status(400),send(error.message)
+        res.status(400).send(error.message)
     }
 })
 
