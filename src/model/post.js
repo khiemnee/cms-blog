@@ -32,9 +32,6 @@ const postSchema = mongoose.Schema(
       ref: "Category",
       required : true
     },
-    views: {
-      type: Number,
-    }
   },
   {
     timestamps: true,

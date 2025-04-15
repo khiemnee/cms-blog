@@ -2,7 +2,7 @@ import express, { json } from "express";
 import checkAuth from "../middleware/auth.js";
 import checkRole from "../middleware/role.js";
 import Post from "../model/post.js";
-import {checkCachePost} from "../middleware/post/checkPostCache.js";
+import { checkCachePost } from "../middleware/post/checkPostCache.js";
 import client from "../redis/redis.js";
 
 const postRouter = new express.Router();
@@ -45,15 +45,13 @@ postRouter.get("/posts", checkAuth, async (req, res) => {
       });
     }
 
-
-
     res.status(201).send(posts);
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
 
-postRouter.get("/posts/:id", checkAuth,checkCachePost, async (req, res) => {
+postRouter.get("/posts/:id", checkAuth, checkCachePost, async (req, res) => {
   try {
     const posts = await Post.findById(req.params.id)
       .populate("category")
@@ -65,18 +63,18 @@ postRouter.get("/posts/:id", checkAuth,checkCachePost, async (req, res) => {
       });
     }
 
-    if(req.postKey){
-        await client.setEx(req.postKey,60,JSON.stringify(posts))
+    if (req.postKey) {
+      await client.setEx(req.postKey, 60, JSON.stringify(posts));
     }
 
-    
-    await client.incr(req.postViews);
+    if (req.postViews) {
+      await client.incr(req.postViews);
+    }
+
     const views = await client.get(req.postViews);
-  
-    await posts.save()
+    await posts.save();
 
-
-    res.status(201).send({posts,views});
+    res.status(201).send({ posts, views });
   } catch (error) {
     res.status(500).send(error.message);
   }
