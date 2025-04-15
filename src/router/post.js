@@ -32,7 +32,7 @@ postRouter.get("/posts", checkAuth, checkCache, async (req, res) => {
       sort[parts[0]] = parts[1] === "desc" ? -1 : 1;
     }
 
-    const posts = await Post.find()
+    const posts = await Post.find({})
       .sort(sort)
       .skip(skip)
       .limit(limit)
