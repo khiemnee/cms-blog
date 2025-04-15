@@ -2,7 +2,7 @@ import express, { json } from "express";
 import checkAuth from "../middleware/auth.js";
 import checkRole from "../middleware/role.js";
 import Post from "../model/post.js";
-import {checkCache,checkCachePost} from "../middleware/post/checkPostCache.js";
+import {checkCachePost} from "../middleware/post/checkPostCache.js";
 import client from "../redis/redis.js";
 
 const postRouter = new express.Router();
@@ -20,7 +20,7 @@ postRouter.post("/posts", checkAuth, checkRole("admin"), async (req, res) => {
   }
 });
 
-postRouter.get("/posts", checkAuth, checkCache, async (req, res) => {
+postRouter.get("/posts", checkAuth, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -32,7 +32,7 @@ postRouter.get("/posts", checkAuth, checkCache, async (req, res) => {
       sort[parts[0]] = parts[1] === "desc" ? -1 : 1;
     }
 
-    const posts = await Post.find({})
+    const posts = await Post.find()
       .sort(sort)
       .skip(skip)
       .limit(limit)
@@ -46,9 +46,6 @@ postRouter.get("/posts", checkAuth, checkCache, async (req, res) => {
     }
 
 
-    if (req.queryKey) {
-      await client.setEx(req.queryKey, 3600, JSON.stringify(posts));
-    }
 
     res.status(201).send(posts);
   } catch (error) {
