@@ -73,11 +73,13 @@ postRouter.get("/posts/:id", checkAuth,checkCachePost, async (req, res) => {
     }
 
     
-
+    await client.incr(req.postViews);
+    const views = await client.get(req.postViews);
+  
     await posts.save()
 
 
-    res.status(201).send(posts);
+    res.status(201).send({posts,views});
   } catch (error) {
     res.status(500).send(error.message);
   }

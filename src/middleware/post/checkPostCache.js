@@ -26,14 +26,18 @@ export const checkCache = async (req,res,next) =>{
 export const checkCachePost = async (req,res,next) =>{
     try {
         const postKey = `posts:${JSON.stringify(req.params.id)}`
+        const postViews = `posts:${JSON.stringify(req.params.id)}:views`
 
         const cachedKey = await client.get(postKey)
 
         if(cachedKey){
-            return res.status(200).send(JSON.parse(cachedKey))
+            await client.incr(postViews)
+            const postViewsKey = await client.get(postViews)
+            return res.status(200).send(JSON.parse({cachedKey,postViewsKey}))
         }
 
         req.postKey = postKey
+        req.postViews = postViews
 
         next()
     } catch (error) {
