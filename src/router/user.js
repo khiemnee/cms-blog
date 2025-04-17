@@ -14,7 +14,7 @@ userRouter.post("/auth/register", async (req, res) => {
     const token = await user.generateToken();
 
     await user.save();
-    res.status(200).send({ user, token });
+    res.status(201).send({ user, token });
   } catch (error) {
     res.status(400).send(error.message);
   }

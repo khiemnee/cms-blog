@@ -2,7 +2,10 @@ import express, { json } from "express";
 import checkAuth from "../middleware/auth.js";
 import checkRole from "../middleware/role.js";
 import Post from "../model/post.js";
-import { checkCachePost } from "../middleware/post/checkPostCache.js";
+import {
+  checkCachePost,
+  checkCachePostCate,
+} from "../middleware/post/checkPostCache.js";
 import client from "../redis/redis.js";
 
 const postRouter = new express.Router();
@@ -74,11 +77,38 @@ postRouter.get("/posts/:id", checkAuth, checkCachePost, async (req, res) => {
     const views = await client.get(req.postViews);
     await posts.save();
 
-    res.status(201).send({ posts, views });
+    res.status(200).send({ posts, views });
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
+
+postRouter.get(
+  "/posts/category/:id",
+  checkAuth,
+  checkCachePostCate,
+  async (req, res) => {
+    try {
+      const posts = await Post.findMany({ category: req.params.id })
+        .populate("category")
+        .populate("author");
+
+      if (!posts) {
+        return res.status(404).send({
+          error: "posts not found",
+        });
+      }
+
+      if (req.postKey) {
+        await client.setEx(req.postKey, 60, JSON.stringify(posts));
+      }
+
+      res.status(200).send(posts);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  }
+);
 
 postRouter.delete(
   "/posts/:id",
@@ -130,7 +160,7 @@ postRouter.patch(
 
       await post.save();
 
-      res.status(200).send(user);
+      res.status(200).send(post);
     } catch (error) {
       res.status(500).send(error.message);
     }
